@@ -1,3 +1,4 @@
+from psycopg2.extras import DictCursor
 import psycopg2
 import discord
 import random
@@ -145,10 +146,10 @@ async def reply(message):
                 length=0
                 content=message.author.name+"のくじ「"+operations[2]+"」のデータ\nid | データ内容\n"
                 with create_connection() as connection:
-                    with connection.cursor() as cursor:
+                    with connection.cursor(cursor_factory=DictCursor) as cursor:
                         cursor.execute("SELECT id,lottery_value from lottery_data where lottery_id=%s and user_name=%s", (operations[2],message.author.name,))
                         for index, row in cursor:
-                            content += str(row[0]) + " | " + str(row[1]) + '\n'
+                            content += str(row["id"]) + " | " + str(row["lottery_value"]) + '\n'
                             length+=1
                         content+="計:"+str(length)
     if content != "":
