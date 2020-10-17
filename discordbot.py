@@ -41,11 +41,16 @@ async def reply(message):
                     connection.commit()
                 content=operations[2]+"を作成しました。"
         elif operations[1] == "add":
-            if len(operations) >= 4:
+            if len(operations) >= 5 and operations[4]=="public":
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
-                        cursor.execute("INSERT INTO lottery_data(lottery_name, lottery_data) VALUES (%s,%s);",
-                                       (operations[2], operations[3]))
+                        cursor.execute("INSERT INTO lottery_data(lottery_name, lottery_data, usern_ame) VALUES (%s,%s,'public');",
+                                       (operations[2], operations[3],))
+            elif len(operations) >= 4:
+                with create_connection() as connection:
+                    with connection.cursor() as cursor:
+                        cursor.execute("INSERT INTO lottery_data(lottery_name, lottery_data, user_name) VALUES (%s,%s,%s);",
+                                       (operations[2], operations[3],message.author.name))
                     connection.commit()
         elif operations[1] == "list":
             content="公開くじリスト\n"
@@ -54,22 +59,30 @@ async def reply(message):
                     with connection.cursor() as cursor:
                         cursor.execute("SELECT lottery_name from lottery_table where user_name='public'")
                         for index, row in enumerate(cursor):
-                            content += index + " | " + row + '\n'
+                            content += str(index) + " | " + row + '\n'
             else:
                 content=message.author.name+"の保存済みくじリスト\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute("SELECT lottery_name from lottery_table where user_name=%s", (message.author.name,))
                         for index, row in enumerate(cursor):
-                            content += index + " | " + row + '\n'
+                            content += str(index) + " | " + row + '\n'
         elif operations[1] == "show":
-            if len(operations)>=3:
+            if len(operations) >= 4 and operations[2] == "public":
+                content = operations[3] + "のデータ\n"
+                with create_connection() as connection:
+                    with connection.cursor() as cursor:
+                        cursor.execute("SELECT lottery_data from lottery_data where lottery_name=%s and user_name='public'",
+                                       (operations[3],))
+                        for index, row in enumerate(cursor):
+                            content += str(index) + " | " + row + '\n'
+            elif len(operations)>=3:
                 content=operations[2]+"のデータ\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute("SELECT lottery_data from lottery_data where lottery_name=%s and user_name=%s", (operations[2],message.author.name,))
                         for index, row in enumerate(cursor):
-                            content += index + " | " + row + '\n'
+                            content += str(index) + " | " + row + '\n'
     if content != "":
         await message.channel.send(content)
 
