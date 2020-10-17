@@ -109,24 +109,27 @@ async def reply(message):
                     connection.commit()
                 content="くじ「"+operations[2]+"」から「"+operations[3]+"」を削除しました。"
         elif operations[1] == "list":
-            content="公開くじリスト\nid | くじ名\n"
             if len(operations) >= 3 and operations[2] == "public":
+                length=0
+                content="公開くじリスト\nid | くじ名\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute("SELECT id,lottery_name from lottery_table where user_name='public'")
                         for row in cursor:
                             content += str(row[0]) + " | " + str(row[1]) + '\n'
-                        content+="計:"+str(len(cursor))
+                        content+="計:"+str(length)
             else:
+                length=0
                 content=message.author.name+"の保存済みくじリスト\nid | くじ名\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute("SELECT id,lottery_name from lottery_table where user_name=%s", (message.author.name,))
                         for row in cursor:
                             content += str(row[0]) + " | " + str(row[1]) + '\n'
-                        content+="計:"+str(len(cursor))
+                        content+="計:"+str(length)
         elif operations[1] == "show":
             if len(operations) >= 4 and operations[2] == "public":
+                length=0
                 content = operations[3] + "のデータ\nid | データ内容\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
@@ -134,15 +137,17 @@ async def reply(message):
                                        (operations[3],))
                         for index, row in enumerate(cursor):
                             content += str(row[0]) + " | " + str(row[1]) + '\n'
-                        content+="計:"+str(len(cursor))
+                        content+="計:"+str(length)
             elif len(operations)>=3:
+                length=0
                 content=operations[2]+"のデータ\nid | データ内容\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute("SELECT id,lottery_data from lottery_data where lottery_name=%s and user_name=%s", (operations[2],message.author.name,))
                         for index, row in cursor:
                             content += str(row[0]) + " | " + str(row[1]) + '\n'
-                        content+="計:"+str(len(cursor))
+                            length+=1
+                        content+="計:"+str(length)
     if content != "":
         await message.channel.send(content)
 
