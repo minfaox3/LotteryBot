@@ -73,14 +73,14 @@ async def reply(message):
                     with connection.cursor() as cursor:
                         cursor.execute("SELECT lottery_name from lottery_table where user_name='public'")
                         for index, row in enumerate(cursor):
-                            content += str(index) + " | " + row + '\n'
+                            content += str(index) + " | " + row[0] + '\n'
             else:
                 content=message.author.name+"の保存済みくじリスト\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute("SELECT lottery_name from lottery_table where user_name=%s", (message.author.name,))
                         for index, row in enumerate(cursor):
-                            content += str(index) + " | " + row + '\n'
+                            content += str(index) + " | " + row[0] + '\n'
         elif operations[1] == "show":
             if len(operations) >= 4 and operations[2] == "public":
                 content = operations[3] + "のデータ\n"
@@ -89,14 +89,14 @@ async def reply(message):
                         cursor.execute("SELECT lottery_data from lottery_data where lottery_name=%s and user_name='public'",
                                        (operations[3],))
                         for index, row in enumerate(cursor):
-                            content += str(index) + " | " + row + '\n'
+                            content += str(index) + " | " + row[0] + '\n'
             elif len(operations)>=3:
                 content=operations[2]+"のデータ\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute("SELECT lottery_data from lottery_data where lottery_name=%s and user_name=%s", (operations[2],message.author.name,))
                         for index, row in enumerate(cursor):
-                            content += str(index) + " | " + row + '\n'
+                            content += str(index) + " | " + row[0] + '\n'
     if content != "":
         await message.channel.send(content)
 
