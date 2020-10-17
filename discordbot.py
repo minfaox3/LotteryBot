@@ -138,7 +138,7 @@ async def reply(message):
                     with connection.cursor() as cursor:
                         cursor.execute("SELECT id,lottery_value from lottery_data where lottery_id=%s and user_name='public'",
                                        (operations[3],))
-                        for index, row in enumerate(cursor):
+                        for row in enumerate(cursor):
                             content += str(row[0]) + " | " + str(row[1]) + '\n'
                             length+=1
                         content+="計:"+str(length)
@@ -148,7 +148,7 @@ async def reply(message):
                 with create_connection() as connection:
                     with connection.cursor(cursor_factory=DictCursor) as cursor:
                         cursor.execute("SELECT id,lottery_value from lottery_data where lottery_id=%s and user_name=%s", (operations[2],message.author.name,))
-                        for index, row in cursor:
+                        for row in cursor:
                             content += str(row["id"]) + " | " + str(row["lottery_value"]) + '\n'
                             length+=1
                         content+="計:"+str(length)
