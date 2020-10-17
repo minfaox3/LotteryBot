@@ -46,7 +46,7 @@ async def reply(message):
                 data = list()
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
-                        cursor.execute("SELECT lottery_data from lottery_data where lottery_id=%s and user_name=%s",
+                        cursor.execute("SELECT lottery_value from lottery_data where lottery_id=%s and user_name=%s",
                                        (operations[2][1:],message.author.name))
                         for row in cursor:
                             data.append(row[0])
@@ -56,7 +56,7 @@ async def reply(message):
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute(
-                            "SELECT lottery_data from lottery_data where lottery_id=%s and user_name='public'",
+                            "SELECT lottery_value from lottery_data where lottery_id=%s and user_name='public'",
                             (operations[3][1:],))
                         for row in cursor:
                             data.append(row[0])
@@ -82,14 +82,14 @@ async def reply(message):
             if len(operations) >= 5 and operations[2]=="public":
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
-                        cursor.execute("INSERT INTO lottery_data(lottery_id, lottery_data, user_name) VALUES (%s,%s,'public');",
+                        cursor.execute("INSERT INTO lottery_data(lottery_id, lottery_value, user_name) VALUES (%s,%s,'public');",
                                        (operations[3], operations[4],))
                     connection.commit()
                 content="公開くじ「"+operations[3]+"」に「"+operations[4]+"」を追加しました。"
             elif len(operations) >= 4:
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
-                        cursor.execute("INSERT INTO lottery_data(lottery_id, lottery_data, user_name) VALUES (%s,%s,%s);",
+                        cursor.execute("INSERT INTO lottery_data(lottery_id, lottery_value, user_name) VALUES (%s,%s,%s);",
                                        (operations[2], operations[3],message.author.name))
                     connection.commit()
                 content="自分のくじ「"+operations[2]+"」に「"+operations[3]+"」を追加しました。"
@@ -135,7 +135,7 @@ async def reply(message):
                 content = "公開くじ「"+operations[3] + "」のデータ\nid | データ内容\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
-                        cursor.execute("SELECT id,lottery_data.lottery_data from lottery_data where lottery_name=%s and user_name='public'",
+                        cursor.execute("SELECT id,lottery_value from lottery_data where lottery_name=%s and user_name='public'",
                                        (operations[3],))
                         for index, row in enumerate(cursor):
                             content += str(row[0]) + " | " + str(row[1]) + '\n'
@@ -146,7 +146,7 @@ async def reply(message):
                 content=message.author.name+"のくじ「"+operations[2]+"」のデータ\nid | データ内容\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
-                        cursor.execute("SELECT id,lottery_data.lottery_data from lottery_data where lottery_name=%s and user_name=%s", (operations[2],message.author.name,))
+                        cursor.execute("SELECT id,lottery_value from lottery_data where lottery_name=%s and user_name=%s", (operations[2],message.author.name,))
                         for index, row in cursor:
                             content += str(row[0]) + " | " + str(row[1]) + '\n'
                             length+=1
