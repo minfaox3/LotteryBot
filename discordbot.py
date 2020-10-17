@@ -70,14 +70,14 @@ async def reply(message):
                         cursor.execute("INSERT INTO lottery_table(user_name, lottery_name) VALUES ('public', %s);",
                                        (operations[3],))
                     connection.commit()
-                content="くじ「"+operations[3]+"」を作成しました。"
+                content="公開くじ「"+operations[3]+"」を作成しました。"
             elif len(operations) >= 3:
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute("INSERT INTO lottery_table(user_name, lottery_name) VALUES (%s,%s);",
                                        (message.author.name, operations[2]))
                     connection.commit()
-                content="くじ「"+operations[2]+"」を作成しました。"
+                content="自分のくじ「"+operations[2]+"」を作成しました。"
         elif operations[1] == "add":
             if len(operations) >= 5 and operations[2]=="public":
                 with create_connection() as connection:
@@ -85,14 +85,14 @@ async def reply(message):
                         cursor.execute("INSERT INTO lottery_data(lottery_id, lottery_data, user_name) VALUES (%s,%s,'public');",
                                        (operations[3], operations[4],))
                     connection.commit()
-                content="くじ「"+operations[3]+"」に「"+operations[4]+"」を追加しました。"
+                content="公開くじ「"+operations[3]+"」に「"+operations[4]+"」を追加しました。"
             elif len(operations) >= 4:
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute("INSERT INTO lottery_data(lottery_id, lottery_data, user_name) VALUES (%s,%s,%s);",
                                        (operations[2], operations[3],message.author.name))
                     connection.commit()
-                content="くじ「"+operations[2]+"」に「"+operations[3]+"」を追加しました。"
+                content="自分のくじ「"+operations[2]+"」に「"+operations[3]+"」を追加しました。"
         elif operations[1] == "delete":
             if len(operations) >= 5 and operations[2]=="public":
                 with create_connection() as connection:
@@ -100,14 +100,14 @@ async def reply(message):
                         cursor.execute("DELETE FROM lottery_data WHERE user_name='public' and lottery_id=%s and id=%s);",
                                        (operations[3], operations[4],))
                     connection.commit()
-                content="くじ「"+operations[3]+"」から「"+operations[4]+"」を削除しました。"
+                content="公開くじ「"+operations[3]+"」から「"+operations[4]+"」を削除しました。"
             elif len(operations) >= 4:
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute("DELETE FROM lottery_data WHERE user_name=%s and lottery_id=%s and id=%s);",
                                        (message.author.name,operations[2], operations[3],))
                     connection.commit()
-                content="くじ「"+operations[2]+"」から「"+operations[3]+"」を削除しました。"
+                content="自分のくじ「"+operations[2]+"」から「"+operations[3]+"」を削除しました。"
         elif operations[1] == "list":
             if len(operations) >= 3 and operations[2] == "public":
                 length=0
@@ -117,6 +117,7 @@ async def reply(message):
                         cursor.execute("SELECT id,lottery_name from lottery_table where user_name='public'")
                         for row in cursor:
                             content += str(row[0]) + " | " + str(row[1]) + '\n'
+                            length+=1
                         content+="計:"+str(length)
             else:
                 length=0
@@ -126,21 +127,23 @@ async def reply(message):
                         cursor.execute("SELECT id,lottery_name from lottery_table where user_name=%s", (message.author.name,))
                         for row in cursor:
                             content += str(row[0]) + " | " + str(row[1]) + '\n'
+                            length+=1
                         content+="計:"+str(length)
         elif operations[1] == "show":
             if len(operations) >= 4 and operations[2] == "public":
                 length=0
-                content = operations[3] + "のデータ\nid | データ内容\n"
+                content = "公開くじ「"+operations[3] + "」のデータ\nid | データ内容\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute("SELECT id,lottery_data from lottery_data where lottery_name=%s and user_name='public'",
                                        (operations[3],))
                         for index, row in enumerate(cursor):
                             content += str(row[0]) + " | " + str(row[1]) + '\n'
+                            length+=1
                         content+="計:"+str(length)
             elif len(operations)>=3:
                 length=0
-                content=operations[2]+"のデータ\nid | データ内容\n"
+                content=message.author.name+"のくじ「"+operations[2]+"」のデータ\nid | データ内容\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute("SELECT id,lottery_data from lottery_data where lottery_name=%s and user_name=%s", (operations[2],message.author.name,))
