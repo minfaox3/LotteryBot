@@ -135,7 +135,7 @@ async def reply(message):
                 content = "公開くじ「"+operations[3] + "」のデータ\nid | データ内容\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
-                        cursor.execute("SELECT id,lottery_data from lottery_data where lottery_name=%s and user_name='public'",
+                        cursor.execute("SELECT id,lottery_data.lottery_data from lottery_data where lottery_name=%s and user_name='public'",
                                        (operations[3],))
                         for index, row in enumerate(cursor):
                             content += str(row[0]) + " | " + str(row[1]) + '\n'
@@ -146,7 +146,7 @@ async def reply(message):
                 content=message.author.name+"のくじ「"+operations[2]+"」のデータ\nid | データ内容\n"
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
-                        cursor.execute("SELECT id,lottery_data from lottery_data where lottery_name=%s and user_name=%s", (operations[2],message.author.name,))
+                        cursor.execute("SELECT id,lottery_data.lottery_data from lottery_data where lottery_name=%s and user_name=%s", (operations[2],message.author.name,))
                         for index, row in cursor:
                             content += str(row[0]) + " | " + str(row[1]) + '\n'
                             length+=1
