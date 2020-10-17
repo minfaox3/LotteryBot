@@ -1,0 +1,1 @@
+lotterybot: python discordbot.py
