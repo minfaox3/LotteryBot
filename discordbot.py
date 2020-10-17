@@ -1,4 +1,5 @@
 import discord
+import random
 import os
 
 token = os.environ['DISCORD_BOT_TOKEN']
@@ -10,7 +11,13 @@ async def on_ready():
 
 async def reply(message):
     operations = message.content.split(' ')
-    await message.channel.send(operations[0])
+    content = ""
+    if operations[1] == "run":
+        if len(operations)>=2 and operations[2][0] == '@' and operations[2][1:].isdigit():
+            content = operations[2][1:]
+        elif len(operations)>=3 and operations[2].isdigit() and operations[3].isdigit():
+            content = random.randint(int(operations[2]),int(operations[3]))
+    await message.channel.send(content)
 
 @client.event
 async def on_message(message):
