@@ -41,16 +41,30 @@ async def reply(message):
                     connection.commit()
                 content=operations[2]+"を作成しました。"
         elif operations[1] == "add":
-            if len(operations) >= 5 and operations[4]=="public":
+            if len(operations) >= 5 and operations[2]=="public":
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
-                        cursor.execute("INSERT INTO lottery_data(lottery_name, lottery_data, usern_ame) VALUES (%s,%s,'public');",
-                                       (operations[2], operations[3],))
+                        cursor.execute("INSERT INTO lottery_data(lottery_name, lottery_data, user_name) VALUES (%s,%s,'public');",
+                                       (operations[3], operations[4],))
+                    connection.commit()
             elif len(operations) >= 4:
                 with create_connection() as connection:
                     with connection.cursor() as cursor:
                         cursor.execute("INSERT INTO lottery_data(lottery_name, lottery_data, user_name) VALUES (%s,%s,%s);",
                                        (operations[2], operations[3],message.author.name))
+                    connection.commit()
+        elif operations[1] == "delete":
+            if len(operations) >= 5 and operations[2]=="public":
+                with create_connection() as connection:
+                    with connection.cursor() as cursor:
+                        cursor.execute("DELETE FROM lottery_data WHERE user_name='public' and lottery_name=%s and lottery_data=%s);",
+                                       (operations[3], operations[4],))
+                    connection.commit()
+            elif len(operations) >= 4:
+                with create_connection() as connection:
+                    with connection.cursor() as cursor:
+                        cursor.execute("DELETE FROM lottery_data WHERE user_name=%s and lottery_name=%s and lottery_data=%s);",
+                                       (message.author.name,operations[2], operations[3],))
                     connection.commit()
         elif operations[1] == "list":
             content="公開くじリスト\n"
