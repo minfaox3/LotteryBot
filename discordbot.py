@@ -126,14 +126,14 @@ async def reply(message):
                         with create_connection() as connection:
                             with connection.cursor() as cursor:
                                 cursor.execute(
-                                    "DELETE FROM lottery_data WHERE user_name='public' and lottery_id=%s and id=%s);",
+                                    "DELETE FROM lottery_data WHERE user_name='public' and lottery_id=%s and id=%s",
                                     (operations[3], value,))
                             connection.commit()
                         content = "公開くじ「" + operations[3] + "」から「" + value + "」を削除しました。\n"
                 else:
                     with create_connection() as connection:
                         with connection.cursor() as cursor:
-                            cursor.execute("DELETE FROM lottery_data WHERE user_name='public' and lottery_id=%s and id=%s);",
+                            cursor.execute("DELETE FROM lottery_data WHERE user_name='public' and lottery_id=%s and id=%s",
                                            (operations[3], operations[4],))
                         connection.commit()
                     content="公開くじ「"+operations[3]+"」から「"+operations[4]+"」を削除しました。"
@@ -144,14 +144,14 @@ async def reply(message):
                         with create_connection() as connection:
                             with connection.cursor() as cursor:
                                 cursor.execute(
-                                    "DELETE FROM lottery_data WHERE user_name=%s and lottery_id=%s and id=%s);",
+                                    "DELETE FROM lottery_data WHERE user_name=%s and lottery_id=%s and id=%s",
                                     (message.author.name, operations[2], value,))
                             connection.commit()
                         content = "自分のくじ「" + operations[2] + "」から「" + value + "」を削除しました。\n"
                 else:
                     with create_connection() as connection:
                         with connection.cursor() as cursor:
-                            cursor.execute("DELETE FROM lottery_data WHERE user_name=%s and lottery_id=%s and id=%s);",
+                            cursor.execute("DELETE FROM lottery_data WHERE user_name=%s and lottery_id=%s and id=%s",
                                            (message.author.name, operations[2], operations[3],))
                         connection.commit()
                     content = "自分のくじ「" + operations[2] + "」から「" + operations[3] + "」を削除しました。"
