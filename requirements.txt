@@ -5,4 +5,5 @@ chardet==3.0.4
 discord.py==1.5.0
 idna==2.10
 multidict==4.7.6
+psycopg2==2.8.6
 yarl==1.5.1
