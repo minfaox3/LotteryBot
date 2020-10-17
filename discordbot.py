@@ -81,34 +81,80 @@ async def reply(message):
                 content="自分のくじ「"+operations[2]+"」を作成しました。"
         elif operations[1] == "add":
             if len(operations) >= 5 and operations[2]=="public":
-                with create_connection() as connection:
-                    with connection.cursor() as cursor:
-                        cursor.execute("INSERT INTO lottery_data(lottery_id, lottery_value, user_name) VALUES (%s,%s,'public');",
-                                       (operations[3], operations[4],))
-                    connection.commit()
-                content="公開くじ「"+operations[3]+"」に「"+operations[4]+"」を追加しました。"
+                if ',' in operations[4]:
+                    values = operations[4].split(',')
+                    for value in values:
+                        with create_connection() as connection:
+                            with connection.cursor() as cursor:
+                                cursor.execute(
+                                    "INSERT INTO lottery_data(lottery_id, lottery_value, user_name) VALUES (%s,%s,'public');",
+                                    (operations[3], value,))
+                            connection.commit()
+                        content = "公開くじ「" + operations[3] + "」に「" + value + "」を追加しました。\n"
+                else:
+                    with create_connection() as connection:
+                        with connection.cursor() as cursor:
+                            cursor.execute(
+                                "INSERT INTO lottery_data(lottery_id, lottery_value, user_name) VALUES (%s,%s,'public');",
+                                (operations[3], operations[4],))
+                        connection.commit()
+                    content = "公開くじ「" + operations[3] + "」に「" + operations[4] + "」を追加しました。"
             elif len(operations) >= 4:
-                with create_connection() as connection:
-                    with connection.cursor() as cursor:
-                        cursor.execute("INSERT INTO lottery_data(lottery_id, lottery_value, user_name) VALUES (%s,%s,%s);",
-                                       (operations[2], operations[3],message.author.name))
-                    connection.commit()
-                content="自分のくじ「"+operations[2]+"」に「"+operations[3]+"」を追加しました。"
+                if ',' in operations[3]:
+                    values = operations[3].split(',')
+                    for value in values:
+                        with create_connection() as connection:
+                            with connection.cursor() as cursor:
+                                cursor.execute(
+                                    "INSERT INTO lottery_data(lottery_id, lottery_value, user_name) VALUES (%s,%s,%s);",
+                                    (operations[2], value, message.author.name))
+                            connection.commit()
+                        content = "自分のくじ「" + operations[2] + "」に「" + value + "」を追加しました。\n"
+                else:
+                    with create_connection() as connection:
+                        with connection.cursor() as cursor:
+                            cursor.execute(
+                                "INSERT INTO lottery_data(lottery_id, lottery_value, user_name) VALUES (%s,%s,%s);",
+                                (operations[2], operations[3], message.author.name))
+                        connection.commit()
+                    content = "自分のくじ「" + operations[2] + "」に「" + operations[3] + "」を追加しました。"
         elif operations[1] == "delete":
             if len(operations) >= 5 and operations[2]=="public":
-                with create_connection() as connection:
-                    with connection.cursor() as cursor:
-                        cursor.execute("DELETE FROM lottery_data WHERE user_name='public' and lottery_id=%s and id=%s);",
-                                       (operations[3], operations[4],))
-                    connection.commit()
-                content="公開くじ「"+operations[3]+"」から「"+operations[4]+"」を削除しました。"
+                if ',' in operations[4]:
+                    values = operations[4].split(',')
+                    for value in values:
+                        with create_connection() as connection:
+                            with connection.cursor() as cursor:
+                                cursor.execute(
+                                    "DELETE FROM lottery_data WHERE user_name='public' and lottery_id=%s and id=%s);",
+                                    (operations[3], value,))
+                            connection.commit()
+                        content = "公開くじ「" + operations[3] + "」から「" + value + "」を削除しました。\n"
+                else:
+                    with create_connection() as connection:
+                        with connection.cursor() as cursor:
+                            cursor.execute("DELETE FROM lottery_data WHERE user_name='public' and lottery_id=%s and id=%s);",
+                                           (operations[3], operations[4],))
+                        connection.commit()
+                    content="公開くじ「"+operations[3]+"」から「"+operations[4]+"」を削除しました。"
             elif len(operations) >= 4:
-                with create_connection() as connection:
-                    with connection.cursor() as cursor:
-                        cursor.execute("DELETE FROM lottery_data WHERE user_name=%s and lottery_id=%s and id=%s);",
-                                       (message.author.name,operations[2], operations[3],))
-                    connection.commit()
-                content="自分のくじ「"+operations[2]+"」から「"+operations[3]+"」を削除しました。"
+                if ',' in operations[3]:
+                    values = operations[3].split(',')
+                    for value in values:
+                        with create_connection() as connection:
+                            with connection.cursor() as cursor:
+                                cursor.execute(
+                                    "DELETE FROM lottery_data WHERE user_name=%s and lottery_id=%s and id=%s);",
+                                    (message.author.name, operations[2], value,))
+                            connection.commit()
+                        content = "自分のくじ「" + operations[2] + "」から「" + value + "」を削除しました。\n"
+                else:
+                    with create_connection() as connection:
+                        with connection.cursor() as cursor:
+                            cursor.execute("DELETE FROM lottery_data WHERE user_name=%s and lottery_id=%s and id=%s);",
+                                           (message.author.name, operations[2], operations[3],))
+                        connection.commit()
+                    content = "自分のくじ「" + operations[2] + "」から「" + operations[3] + "」を削除しました。"
         elif operations[1] == "list":
             if len(operations) >= 3 and operations[2] == "public":
                 length=0
