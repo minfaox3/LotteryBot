@@ -90,7 +90,7 @@ async def reply(message):
                                     "INSERT INTO lottery_data(lottery_id, lottery_value, user_name) VALUES (%s,%s,'public');",
                                     (operations[3], value,))
                             connection.commit()
-                        content = "公開くじ「" + operations[3] + "」に「" + value + "」を追加しました。\n"
+                        content += "公開くじ「" + operations[3] + "」に「" + value + "」を追加しました。\n"
                 else:
                     with create_connection() as connection:
                         with connection.cursor() as cursor:
@@ -109,7 +109,7 @@ async def reply(message):
                                     "INSERT INTO lottery_data(lottery_id, lottery_value, user_name) VALUES (%s,%s,%s);",
                                     (operations[2], value, message.author.name))
                             connection.commit()
-                        content = "自分のくじ「" + operations[2] + "」に「" + value + "」を追加しました。\n"
+                        content += "自分のくじ「" + operations[2] + "」に「" + value + "」を追加しました。\n"
                 else:
                     with create_connection() as connection:
                         with connection.cursor() as cursor:
@@ -129,7 +129,7 @@ async def reply(message):
                                     "DELETE FROM lottery_data WHERE user_name='public' and lottery_id=%s and id=%s",
                                     (operations[3], value,))
                             connection.commit()
-                        content = "公開くじ「" + operations[3] + "」から「" + value + "」を削除しました。\n"
+                        content += "公開くじ「" + operations[3] + "」から「" + value + "」を削除しました。\n"
                 else:
                     with create_connection() as connection:
                         with connection.cursor() as cursor:
@@ -147,7 +147,7 @@ async def reply(message):
                                     "DELETE FROM lottery_data WHERE user_name=%s and lottery_id=%s and id=%s",
                                     (message.author.name, operations[2], value,))
                             connection.commit()
-                        content = "自分のくじ「" + operations[2] + "」から「" + value + "」を削除しました。\n"
+                        content += "自分のくじ「" + operations[2] + "」から「" + value + "」を削除しました。\n"
                 else:
                     with create_connection() as connection:
                         with connection.cursor() as cursor:
