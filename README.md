@@ -1,0 +1,2 @@
+# LotteryBot
+くじ引きbot
