@@ -9,8 +9,8 @@ async def on_ready():
     print("ログインしました")
 
 async def reply(message):
-    reply = f'{message.author.mention} こんにちわ'
-    await message.channel.send(reply)
+    operations = message.content.split(' ')
+    await message.channel.send(operations[0])
 
 @client.event
 async def on_message(message):
