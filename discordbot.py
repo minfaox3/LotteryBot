@@ -51,7 +51,7 @@ async def reply(message):
                                        (operations[2][1:],message.author.name))
                         for row in cursor:
                             data.append(row[0])
-                content = str(data[random.randint(0,len(row)-1)])
+                content = str(data[random.randint(0,len(data)-1)])
             elif len(operations) >= 3 and operations[2]=="public" and operations[3][0] == '@' and operations[3][1:].isdigit():
                 data = list()
                 with create_connection() as connection:
@@ -61,7 +61,7 @@ async def reply(message):
                             (operations[3][1:],))
                         for row in cursor:
                             data.append(row[0])
-                content = str(data[random.randint(0, len(row) - 1)])
+                content = str(data[random.randint(0, len(data) - 1)])
             elif len(operations) >= 4 and operations[2].isdigit() and operations[3].isdigit():
                 content = random.randint(int(operations[2]), int(operations[3]))
         elif operations[1] == "create":
