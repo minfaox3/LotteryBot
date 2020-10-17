@@ -114,20 +114,20 @@ async def reply(message):
                 length=0
                 content="公開くじリスト\nid | くじ名\n"
                 with create_connection() as connection:
-                    with connection.cursor() as cursor:
-                        cursor.execute("SELECT id,lottery_name from lottery_table where user_name='public'")
+                    with connection.cursor(cursor_factory=DictCursor) as cursor:
+                        cursor.execute("SELECT * from lottery_table where user_name='public'")
                         for row in cursor:
-                            content += str(row[0]) + " | " + str(row[1]) + '\n'
+                            content += str(row["id"]) + " | " + str(row["lottery_name"]) + '\n'
                             length+=1
                         content+="計:"+str(length)
             else:
                 length=0
                 content=message.author.name+"の保存済みくじリスト\nid | くじ名\n"
                 with create_connection() as connection:
-                    with connection.cursor() as cursor:
-                        cursor.execute("SELECT id,lottery_name from lottery_table where user_name=%s", (message.author.name,))
+                    with connection.cursor(cursor_factory=DictCursor) as cursor:
+                        cursor.execute("SELECT * from lottery_table where user_name=%s", (message.author.name,))
                         for row in cursor:
-                            content += str(row[0]) + " | " + str(row[1]) + '\n'
+                            content += str(row["id"]) + " | " + str(row["lottery_name"]) + '\n'
                             length+=1
                         content+="計:"+str(length)
         elif operations[1] == "show":
@@ -135,11 +135,11 @@ async def reply(message):
                 length=0
                 content = "公開くじ「"+operations[3] + "」のデータ\nid | データ内容\n"
                 with create_connection() as connection:
-                    with connection.cursor() as cursor:
-                        cursor.execute("SELECT id,lottery_value from lottery_data where lottery_id=%s and user_name='public'",
+                    with connection.cursor(cursor_factory=DictCursor) as cursor:
+                        cursor.execute("SELECT * from lottery_data where lottery_id=%s and user_name='public'",
                                        (operations[3],))
-                        for row in enumerate(cursor):
-                            content += str(row[0]) + " | " + str(row[1]) + '\n'
+                        for row in cursor:
+                            content += str(row["id"]) + " | " + str(row["lottery_value"]) + '\n'
                             length+=1
                         content+="計:"+str(length)
             elif len(operations)>=3:
@@ -147,7 +147,7 @@ async def reply(message):
                 content=message.author.name+"のくじ「"+operations[2]+"」のデータ\nid | データ内容\n"
                 with create_connection() as connection:
                     with connection.cursor(cursor_factory=DictCursor) as cursor:
-                        cursor.execute("SELECT id,lottery_value from lottery_data where lottery_id=%s and user_name=%s", (operations[2],message.author.name,))
+                        cursor.execute("SELECT * from lottery_data where lottery_id=%s and user_name=%s", (operations[2],message.author.name,))
                         for row in cursor:
                             content += str(row["id"]) + " | " + str(row["lottery_value"]) + '\n'
                             length+=1
