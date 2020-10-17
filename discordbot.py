@@ -16,7 +16,7 @@ async def reply(message):
 async def on_message(message):
     if message.author.bot:
         return
-    if client.users in message.mentions:
+    if client.user in message.mentions:
         await reply(message)
 
 client.run(token)
